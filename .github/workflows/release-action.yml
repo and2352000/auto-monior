@@ -1,4 +1,4 @@
-name: Build and Publish Official public NPM Package
+name: Build and Publish Package
 
 on:
   push:
@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 22.11.0
           registry-url: https://registry.npmjs.org/
-          scope: ''
+          scope: '@aaronislandx'
       - run: npm ci
       - run: npm test
       - run: npm publish --access public
