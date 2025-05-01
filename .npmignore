@@ -1,0 +1,18 @@
+# 原始碼
+src/
+tests/
+__tests__/
+
+# 配置檔
+.github/
+.gitignore
+.eslintrc
+.prettierrc
+jest.config.js
+tsconfig.json
+
+# 其他
+*.log
+node_modules/
+coverage/
+.DS_Store
