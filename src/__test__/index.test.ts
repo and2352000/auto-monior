@@ -1,4 +1,4 @@
-import { Label } from '../index';
+import { MethodLabel } from '../index';
 import CreateAutoMonitor from '../index';
 
 describe('AutoMonitor', () => {
@@ -13,7 +13,7 @@ describe('AutoMonitor', () => {
   describe('Label decorator', () => {
     it('should add label extractor to method', () => {
       class TestClass {
-        @Label((arg: number) => ({test: arg}))
+        @MethodLabel((arg: number) => ({test: arg}))
         testMethod(arg: number) {}
       }
 
@@ -35,10 +35,13 @@ describe('AutoMonitor', () => {
       instance.testMethod();
 
       expect(mockCallback).toHaveBeenCalledWith(
-        'testMethod',
-        expect.any(Number),
-        false,
-        {}
+        {
+          methodName: 'testMethod',
+          duration: expect.any(Number),
+          data: 'result',
+          labels: {},
+          error: undefined
+        }
       );
     });
 
@@ -55,17 +58,20 @@ describe('AutoMonitor', () => {
       await instance.testMethod();
 
       expect(mockCallback).toHaveBeenCalledWith(
-        'testMethod',
-        expect.any(Number),
-        false,
-        {}
+        {
+          methodName: 'testMethod',
+          duration: expect.any(Number),
+          data: 'result',
+          labels: {},
+          error: undefined
+        }
       );
     });
 
     it('should monitor method with labels', () => {
       @AutoMonitor
       class TestClass {
-        @Label((arg: number) => ({test: arg}))
+        @MethodLabel((arg: number) => ({test: arg}))
         testMethod(arg: number) {}
       }
 
@@ -73,10 +79,13 @@ describe('AutoMonitor', () => {
       instance.testMethod(123);
 
       expect(mockCallback).toHaveBeenCalledWith(
-        'testMethod',
-        expect.any(Number),
-        false,
-        {test: 123}
+        {
+          methodName: 'testMethod',
+          duration: expect.any(Number),
+          data: undefined,
+          labels: {test: 123},
+          error: undefined
+        }
       );
     });
 
@@ -92,10 +101,13 @@ describe('AutoMonitor', () => {
       expect(() => instance.testMethod()).toThrow('Test error');
 
       expect(mockCallback).toHaveBeenCalledWith(
-        'testMethod',
-        expect.any(Number),
-        true,
-        {}
+        {
+          methodName: 'testMethod',
+          duration: expect.any(Number),
+          data: undefined,
+          labels: {},
+          error: expect.any(Error)
+        }
       );
     });
 
@@ -110,10 +122,13 @@ describe('AutoMonitor', () => {
       TestClass.testMethod();
 
       expect(mockCallback).toHaveBeenCalledWith(
-        'testMethod',
-        expect.any(Number),
-        false,
-        {}
+        {
+          methodName: 'testMethod',
+          duration: expect.any(Number),
+          data: 'result',
+          labels: {},
+          error: undefined
+        }
       );
     });
   });
