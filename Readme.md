@@ -33,18 +33,20 @@ npm install auto-monitor
 const AutoMonitor = CreateAutoMonitor((
   methodName: string,
   duration: number,
-  isError: boolean,
+  Error: Error,
+  data: any,
+  props: Record<string, any>
   labels?: Label[]
 ) => {
   console.log({
     method: methodName,
     executionTime: duration,
-    failed: isError,
+    failed: Boolean(Error),
     metadata: labels
   });
 });
 
-@AutoMonitor
+@AutoMonitor('MonitoredService')
 class MonitoredService {
   // Your class implementation
 }
@@ -54,8 +56,9 @@ class MonitoredService {
 ```typescript
 import { AutoMonitor, Label } from 'auto-monitor';
 
-@AutoMonitor
+@AutoMonitor('MonitoredService', ['vendor'])
 class ExampleService {
+  constructor(public vendor: string){}
   // Instance method with label
   @Label((orderId: number) => ({orderId}))
   async processOrder(orderId: number) {
@@ -76,3 +79,4 @@ await service.processOrder(123);
 ExampleService.greet("John");
 ```
 
+> You can test the functionality in ./src/example.ts
