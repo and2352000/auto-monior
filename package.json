@@ -1,6 +1,6 @@
 {
   "name": "@aaronislandx/auto-monitor",
-  "version": "1.0.0-beta.6",
+  "version": "1.0.0-beta.7",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -8,8 +8,7 @@
     "dev": "ts-node src/index.ts",
     "build": "tsc",
     "test": "jest",
-    "prepublishOnly": "npm ci && npm test && npm run build",
-    "publish": "npm publish --access public"
+    "prepublishOnly": "npm ci && npm test && npm run build"
   },
   "keywords": [
     "monitoring",
