@@ -13,8 +13,8 @@ describe('AutoMonitor', () => {
   describe('Label decorator', () => {
     it('should add label extractor to method', () => {
       class TestClass {
-        @MethodLabel((arg: number) => ({test: arg}))
-        testMethod(arg: number) {}
+        @MethodLabel((arg: number) => ({ test: arg }))
+        testMethod(arg: number) { }
       }
 
       const instance = new TestClass();
@@ -24,8 +24,9 @@ describe('AutoMonitor', () => {
 
   describe('AutoMonitor decorator', () => {
     it('should monitor sync method execution', () => {
-      @AutoMonitor
+      @AutoMonitor('TestClass', ['label'])
       class TestClass {
+        public label = 'test'
         testMethod() {
           return 'result';
         }
@@ -36,17 +37,19 @@ describe('AutoMonitor', () => {
 
       expect(mockCallback).toHaveBeenCalledWith(
         {
+          className: 'TestClass',
           methodName: 'testMethod',
           duration: expect.any(Number),
           data: 'result',
           labels: {},
+          props: { label: 'test' },
           error: undefined
         }
       );
     });
 
     it('should monitor async method execution', async () => {
-      @AutoMonitor
+      @AutoMonitor('TestClass', [])
       class TestClass {
         async testMethod() {
           await new Promise(resolve => setTimeout(resolve, 100));
@@ -59,20 +62,22 @@ describe('AutoMonitor', () => {
 
       expect(mockCallback).toHaveBeenCalledWith(
         {
+          className: 'TestClass',
           methodName: 'testMethod',
           duration: expect.any(Number),
           data: 'result',
           labels: {},
+          props: {},
           error: undefined
         }
       );
     });
 
     it('should monitor method with labels', () => {
-      @AutoMonitor
+      @AutoMonitor('TestClass', [])
       class TestClass {
-        @MethodLabel((arg: number) => ({test: arg}))
-        testMethod(arg: number) {}
+        @MethodLabel((arg: number) => ({ test: arg }))
+        testMethod(arg: number) { }
       }
 
       const instance = new TestClass();
@@ -80,17 +85,19 @@ describe('AutoMonitor', () => {
 
       expect(mockCallback).toHaveBeenCalledWith(
         {
+          className: 'TestClass',
           methodName: 'testMethod',
           duration: expect.any(Number),
           data: undefined,
-          labels: {test: 123},
+          labels: { test: 123 },
+          props: {},
           error: undefined
         }
       );
     });
 
     it('should monitor method errors', () => {
-      @AutoMonitor
+      @AutoMonitor('TestClass', [])
       class TestClass {
         testMethod() {
           throw new Error('Test error');
@@ -102,17 +109,19 @@ describe('AutoMonitor', () => {
 
       expect(mockCallback).toHaveBeenCalledWith(
         {
+          className: 'TestClass',
           methodName: 'testMethod',
           duration: expect.any(Number),
           data: undefined,
           labels: {},
+          props: {},
           error: expect.any(Error)
         }
       );
     });
 
     it('should monitor static methods', () => {
-      @AutoMonitor
+      @AutoMonitor('TestClass', [])
       class TestClass {
         static testMethod() {
           return 'result';
@@ -123,10 +132,12 @@ describe('AutoMonitor', () => {
 
       expect(mockCallback).toHaveBeenCalledWith(
         {
+          className: 'TestClass',
           methodName: 'testMethod',
           duration: expect.any(Number),
           data: 'result',
           labels: {},
+          props: {},
           error: undefined
         }
       );
